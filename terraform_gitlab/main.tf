@@ -1,7 +1,3 @@
-module "terraform_global" {
-  source = "../terraform_global"
-}
-
 provider "aws" {
   region = "${var.region}"
 }
@@ -48,11 +44,11 @@ resource "aws_spot_fleet_request" "gitlab_spot" {
     ami                    = "${var.spot_ami}"
     spot_price             = "${var.spot_max_price}"
     availability_zone      = "${var.region}c"
-    subnet_id              = "${module.terraform_global.subnet_gitlab_id}"
-    vpc_security_group_ids = ["${module.terraform_global.security_group_gitlab_id}"]
+    subnet_id              = "${var.subnet_gitlab_id}"
+    vpc_security_group_ids = ["${var.security_group_gitlab_id}"]
     key_name               = "${var.spot_key_pair_name}"
     user_data              = "${file("${path.module}/data/user_data.sh")}"
-    iam_instance_profile   = "${aws_iam_role.ecs_instance_role.name}"
+    iam_instance_profile   = "${aws_iam_instance_profile.ecs_instance_profile.name}"
 
     root_block_device {
       volume_size           = "20"
@@ -68,7 +64,7 @@ resource "aws_lb_target_group" "gitlab" {
   name     = "gitlab"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = "${module.terraform_global.vpc_gitlab_id}"
+  vpc_id   = "${var.vpc_gitlab_id}"
 
   health_check {
     path                = "/users/sign_in"
@@ -90,8 +86,8 @@ resource "aws_lb" "gitlab" {
   name               = "gitlab"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["${module.terraform_global.security_group_gitlab_id}"]
-  subnets            = ["${module.terraform_global.subnet_gitlab_id}", "${module.terraform_global.subnet_b_gitlab_id}"]
+  security_groups    = ["${var.security_group_gitlab_id}"]
+  subnets            = ["${var.subnet_gitlab_id}", "${var.subnet_b_gitlab_id}"]
 
   enable_deletion_protection = true
 

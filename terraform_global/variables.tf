@@ -1,6 +1,4 @@
-variable "region" {
-  default = "us-east-2"
-}
+variable "region" {}
 
 variable "ssh-rsa" {
   default = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWFv049Nrw6UE3Ufignq4/OM3qJtYIpmVShgHcXnOaYQ0diChX7j0+9gY8IrTqBwAk6q0AHtpLXSfY8dtc3VR18jXBBf4VV2Fcv/V8+usHrTQXYDMyfb7SYeF1+pxSEc1CLgVBXroelqZhOpYd6NORYg0W0rB+DZCSX104rh95eVPrhGsGACz1iKnDZXd82l2agAthvmM0GLyT34Uw1eKhhMf1ojcRNAERNd7ja5S+y/1fOyKiJrApB8XPWBI5CkOyldpm83HDlXWWdOEe5J6JO1Ebti2sLrWDeOTBMqlFzNsfar03xp+TcVZ+ZBaax0gwBiPEveE6JKVMj3WNsAZ5 314563@MSPBR008307.local"

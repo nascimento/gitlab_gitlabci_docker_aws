@@ -1,19 +1,19 @@
 variable "region" {}
 
-variable "cluster_name" {
-  default = "GitlabPoc"
+variable "bucket_cache_name" {
+  default = "gitlab_cache"
 }
 
 variable "spot_ami" {
-  default = "ami-8f4e74ea" # ECS Image
+  default = "ami-8c122be9" # Amazon Linux 2 AMI (HVM), SSD Volume Type
 }
 
 variable "spot_instance_type" {
-  default = "t2.small"
+  default = "t2.medium"
 }
 
 variable "spot_max_price" {
-  default = "0.01" # Max 50% do valor de uma t2.small
+  default = "0.02" # Max 50% do valor de uma t2.small
 }
 
 variable "spot_key_pair_name" {
