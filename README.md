@@ -1,5 +1,8 @@
 Este repositório tem a finalidade de demonstrar como subir um ambiente do Gitlab-CE e GitlabCi utilizando Docker e Aws Spot para provisionamento de infraestrutura.
 
+fork from: github.com/nascimento/gitlab_gitlabci_docker_aws
+
+Baseado na documentação: https://docs.gitlab.com/runner/configuration/runner_autoscale_aws/
 
 # Estrutura do Projeto
 ## Terraform

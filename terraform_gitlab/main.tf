@@ -65,13 +65,20 @@ resource "aws_spot_fleet_request" "gitlab_spot" {
 # CONTAINER
 
 resource "aws_lb_target_group" "gitlab" {
-  name     = "redelabs-portal"
+  name     = "gitlab"
   port     = 80
   protocol = "HTTP"
   vpc_id   = "${module.terraform_global.vpc_gitlab_id}"
 
   health_check {
-    path = "/"
+    path                = "/users/sign_in"
+    healthy_threshold   = 10
+    unhealthy_threshold = 10
+    interval            = 60
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 
   tags = {
