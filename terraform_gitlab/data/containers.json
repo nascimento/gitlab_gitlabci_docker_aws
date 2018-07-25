@@ -1,0 +1,13 @@
+[
+  {
+    "name": "gitlab",
+    "image": "gitlab/gitlab-ce",
+    "memory": 1536,
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 80
+      }
+    ]
+  }
+]
