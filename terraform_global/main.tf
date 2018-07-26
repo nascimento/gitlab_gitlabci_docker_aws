@@ -3,7 +3,9 @@ provider "aws" {
 }
 
 resource "aws_vpc" "gitlab" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
 
   tags = {
     Name = "gitlab"
@@ -24,9 +26,10 @@ resource "aws_route_table" "gitlab" {
 }
 
 resource "aws_subnet" "gitlab" {
-  vpc_id            = "${aws_vpc.gitlab.id}"
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = "${var.region}c"
+  vpc_id                  = "${aws_vpc.gitlab.id}"
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "${var.region}c"
+  map_public_ip_on_launch = true
 
   tags = {
     Name = "gitlab"
@@ -34,9 +37,10 @@ resource "aws_subnet" "gitlab" {
 }
 
 resource "aws_subnet" "gitlab_b" {
-  vpc_id            = "${aws_vpc.gitlab.id}"
-  cidr_block        = "10.0.2.0/24"
-  availability_zone = "${var.region}b"
+  vpc_id                  = "${aws_vpc.gitlab.id}"
+  cidr_block              = "10.0.2.0/24"
+  availability_zone       = "${var.region}b"
+  map_public_ip_on_launch = true
 
   tags = {
     Name = "gitlab"

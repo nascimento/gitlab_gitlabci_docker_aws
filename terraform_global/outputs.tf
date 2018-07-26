@@ -13,3 +13,7 @@ output "security_group_gitlab_id" {
 output "vpc_gitlab_id" {
   value = "${aws_vpc.gitlab.id}"
 }
+
+output "key_pair_name" {
+  value = "${aws_key_pair.gitlab.key_name}"
+}

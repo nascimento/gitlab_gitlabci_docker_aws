@@ -9,11 +9,11 @@ variable "spot_ami" {
 }
 
 variable "spot_instance_type" {
-  default = "t2.medium"
+  default = "t2.small"
 }
 
 variable "spot_max_price" {
-  default = "0.02" # Max 50% do valor de uma t2.small
+  default = "0.01" # Max 50% do valor de uma t2.small
 }
 
 variable "spot_key_pair_name" {

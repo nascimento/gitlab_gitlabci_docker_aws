@@ -15,6 +15,7 @@ module "terraform_gitlab" {
   subnet_gitlab_id         = "${module.terraform_global.subnet_gitlab_id}"
   subnet_b_gitlab_id       = "${module.terraform_global.subnet_b_gitlab_id}"
   region                   = "${var.region}"
+  key_pair_name            = "${module.terraform_global.key_pair_name}"
 }
 
 module "terraform_gitlab-runner" {

@@ -20,10 +20,9 @@ Baseado na documentação: https://docs.gitlab.com/runner/configuration/runner_a
 
     Cria a infraestrutura para rodar o Gitlab, utilizando Docker (Aws Ecs) e Instancias Spot (baixo custo).
 
-    > Importante: O Gitlab instalado aqui não tem storage, portanto é para uso temporário.
+    > Importante: O Gitlab instalado aqui não tem backup, portanto é para uso temporário.
 
-    - ecs
-    - ec2 spot request
+    - ec2
 
   - terraform_gitlab-runner
 
@@ -31,8 +30,8 @@ Baseado na documentação: https://docs.gitlab.com/runner/configuration/runner_a
   - Configurar base da Aws
     
     ```bash
-    terraform plan terraform_global
-    terraform apply terraform_global
+    terraform plan 
+    terraform apply 
     ```
 
   - Rodar infraestrutra Gitlab
@@ -40,7 +39,17 @@ Baseado na documentação: https://docs.gitlab.com/runner/configuration/runner_a
     ```bash
     terraform plan terraform_gitlab
     terraform apply terraform_gitlab
-    terraform show terraform.tfstate | grep dns_name 
+    ```
+
+    Logar no Gitlab com ip publico do log acima com usuario 'root' e senha 'password'.
+
+  - Gerar e Atualizar terraform do Gitlab-Runner com token e url do servidor do Gitlab
+
+  - Rodar infraestrutra Gitlab-Runner
+    
+    ```bash
+    terraform plan terraform_gitlab
+    terraform apply terraform_gitlab
     ```
 
     Logar no Gitlab com ip publico do log acima com usuario 'root' e senha 'password'.

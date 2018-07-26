@@ -1,0 +1,16 @@
+concurrent = 1
+check_interval = 0
+
+[[runners]]
+  name = "runner-ci"
+  url = "http://18.222.170.237/"
+  token = "6a8bf8c6316f04b6718bd1136eda3a"
+  executor = "docker"
+  [runners.docker]
+    tls_verify = false
+    image = "alpine"
+    privileged = true
+    disable_cache = false
+    volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
+    shm_size = 0
+  [runners.cache]
