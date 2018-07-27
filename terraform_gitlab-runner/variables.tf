@@ -24,3 +24,4 @@ variable "security_group_gitlab_id" {}
 variable "vpc_gitlab_id" {}
 variable "subnet_gitlab_id" {}
 variable "subnet_b_gitlab_id" {}
+variable "gitlab_url" {}

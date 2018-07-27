@@ -1,15 +1,15 @@
 Este repositório tem a finalidade de demonstrar como subir um ambiente do Gitlab-CE e GitlabCi utilizando Docker e Aws Spot para provisionamento de infraestrutura.
 
-fork from: github.com/nascimento/gitlab_gitlabci_docker_aws
+Fork from: github.com/nascimento/gitlab_gitlabci_docker_aws
 
-Baseado na documentação: https://docs.gitlab.com/runner/configuration/runner_autoscale_aws/
+This repo was based on Gitlab Documentation: https://docs.gitlab.com/runner/configuration/runner_autoscale_aws/
 
-# Estrutura do Projeto
+# Project Structure
 ## Terraform
-###  Modulos
+###  Modules
   - terraform_global
     
-    Configura a estrutura base (simplificada) na Aws para rodar Gitlab e Gitlab-Runner. 
+    This folder has scripts that creates AWS base infra-structure to Gitlab Server and Runner.
     
     - vpc
     - subnet 
@@ -18,38 +18,43 @@ Baseado na documentação: https://docs.gitlab.com/runner/configuration/runner_a
 
   - terraform_gitlab
 
-    Cria a infraestrutura para rodar o Gitlab, utilizando Docker (Aws Ecs) e Instancias Spot (baixo custo).
+    This folder has scripts that creates the infra-structure on AWS with Gitlab.
 
-    > Importante: O Gitlab instalado aqui não tem backup, portanto é para uso temporário.
+    > Important: The Gitlab Server instaled here has no backup, so do not use this in production.
 
+    Creates:
     - ec2
 
   - terraform_gitlab-runner
 
-### Como rodar:
-  - Configurar base da Aws
-    
-    ```bash
-    terraform plan 
-    terraform apply 
-    ```
+    This folder has scripts that creates the infra-structure on AWS with GItlab-Runner with automatic registering runner on Gitlab Server.
 
-  - Rodar infraestrutra Gitlab
-    
-    ```bash
-    terraform plan terraform_gitlab
-    terraform apply terraform_gitlab
-    ```
+    Creates:
+    - Ec2 Spot (t2.small)
+    - Ec2 Spot with Docker.
+      - Gitlab-Runner automatic creates Docker Servers based on gitlab/config.toml and automaticaly scale it with Docker+Machine.
 
-    Logar no Gitlab com ip publico do log acima com usuario 'root' e senha 'password'.
+    > Documentation: https://docs.gitlab.com/runner/configuration/runner_autoscale_aws/
 
-  - Gerar e Atualizar terraform do Gitlab-Runner com token e url do servidor do Gitlab
+### How to run:
 
-  - Rodar infraestrutra Gitlab-Runner
-    
-    ```bash
-    terraform plan terraform_gitlab
-    terraform apply terraform_gitlab
-    ```
+  First, configure your AWS_SECRETS* on ~/.aws/credentials after terraform run.
 
-    Logar no Gitlab com ip publico do log acima com usuario 'root' e senha 'password'.
+  > Doc: https://docs.aws.amazon.com/pt_br/cli/latest/userguide/cli-chap-getting-started.html
+
+  Before, run terraform:
+  
+  ```bash
+  terraform plan 
+  terraform apply 
+  ```
+
+  Running terraform we will: 
+  - Configure based infraestructure on AWS
+  - Create an Ec2 instance for Gitlab App
+  - Create an Ec2 Spot request to run Gitlab-Runner (This use user-data shell script).
+
+### How to test
+  - Access Gitlab Server with public DNS or IP.
+  - Push the projeto _project_high_cpu inside this projeto to created gitlab and push changes some times to see the magic happening.
+

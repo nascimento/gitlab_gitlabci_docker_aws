@@ -13,12 +13,12 @@ resource "aws_s3_bucket" "gitlab" {
 
 # Create an IAM role for the Web Servers.
 resource "aws_iam_role" "gitlab_runner_iam_role" {
-  name               = "ecsInstanceRoleGitlabRunner"
+  name               = "InstanceRoleGitlabRunner"
   assume_role_policy = "${file("${path.module}/data/role_trust.json")}"
 }
 
 resource "aws_iam_instance_profile" "gitlab_runner_instance_profile" {
-  name = "ecsInstanceRoleGitlabRunner"
+  name = "InstanceProfileGitlabRunner"
   role = "${aws_iam_role.gitlab_runner_iam_role.name}"
 }
 
@@ -40,6 +40,18 @@ resource "aws_iam_policy_attachment" "ec2_role" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
+data "template_file" "user_data" {
+  template = "${file("${path.module}/data/user_data.sh")}"
+
+  vars {
+    vpc_id     = "${var.vpc_gitlab_id}"
+    subnet_id  = "${var.subnet_gitlab_id}"
+    gitlab_url = "${var.gitlab_url}"
+    region     = "${var.region}"
+    zone       = "c"
+  }
+}
+
 # Primeira maquina de Runner, pode ser Spot, mas o ideal seria ser Ec2
 resource "aws_spot_fleet_request" "gitlab_runner_spot" {
   iam_fleet_role      = "arn:aws:iam::881584977316:role/aws-ec2-spot-fleet-tagging-role"
@@ -56,7 +68,7 @@ resource "aws_spot_fleet_request" "gitlab_runner_spot" {
     subnet_id                   = "${var.subnet_gitlab_id}"
     vpc_security_group_ids      = ["${var.security_group_gitlab_id}"]
     key_name                    = "${var.spot_key_pair_name}"
-    user_data                   = "${file("${path.module}/data/user_data.sh")}"
+    user_data                   = "${data.template_file.user_data.rendered}"
     iam_instance_profile        = "${aws_iam_instance_profile.gitlab_runner_instance_profile.name}"
     associate_public_ip_address = true
 

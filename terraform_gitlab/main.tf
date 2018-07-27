@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 # CLUSTER ECS
-resource "aws_instance" "web" {
+resource "aws_instance" "gitlab" {
   instance_type               = "${var.instance_type}"
   ami                         = "${var.ami}"
   availability_zone           = "${var.region}c"

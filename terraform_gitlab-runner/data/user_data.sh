@@ -38,7 +38,7 @@ check_interval = 0
 
 [[runners]]
   name = "gitlab-runner-ec2-spot"
-  url = "http://18.222.170.237/"
+  url = "${gitlab_url}"
   token = "[[TOKEN]]"
   executor = "docker+machine"
   limit = 20
@@ -69,10 +69,10 @@ check_interval = 0
     MachineDriver = "amazonec2"
     MachineName = "gitlab-runner-%s"
     MachineOptions = [
-      "amazonec2-region=us-east-2",
-      "amazonec2-zone=c",
-      "amazonec2-vpc-id=vpc-f694a09e",
-      "amazonec2-subnet-id=subnet-7e2dd132",
+      "amazonec2-region=${region}",
+      "amazonec2-zone=${zone}",
+      "amazonec2-vpc-id=${vpc_id}",
+      "amazonec2-subnet-id=${subnet_id}",
       "amazonec2-use-private-address=true",
       "amazonec2-tags=gitlab-runner",
       "amazonec2-security-group=public",
