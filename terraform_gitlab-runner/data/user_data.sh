@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Configura o TimeZone de SaoPaulo
+timedatectl set-timezone America/Sao_Paulo
+yum install -y ntp
+
 # Instala o Docker-Machine
 base=https://github.com/docker/machine/releases/download/v0.14.0 &&
   curl -L $base/docker-machine-$(uname -s)-$(uname -m) > /usr/bin/docker-machine &&
@@ -15,19 +19,21 @@ yum -y install gitlab-runner
 # Registra o Gitlab-Runner
 mkdir -p /etc/gitlab-runner/
 gitlab-ci-multi-runner register -c /etc/gitlab-runner/config.toml \
-  -u http://18.222.170.237/ \
-  -r xfff5XkMs9RjSdRJQ6zY \
+  -u http://18.222.192.9/ \
+  -r FKw8HUvu3yyEHL2XhMyZ \
   --executor "docker+machine" \
   --name "gitlab-runner-ec2-spot" \
   --docker-image "centos" \
   --non-interactive
 
 # Pega Token gerado automaticamente pelo registro.
+echo "Pegando token gerado do conf do Gitlab-Runner"
 token=$(cat /etc/gitlab-runner/config.toml | grep token | cut -d '"' -f2)
 
 # Adiciona a configuração do Runner (Cache no S3 e Orquestração Ec2 Spot)
+echo "Escrevendo o conf do Gitlab-Runner"
 cat <<EOF > /etc/gitlab-runner/config.toml
-concurrent = 20 
+concurrent = 30 
 check_interval = 0
 
 [[runners]]
@@ -43,6 +49,7 @@ check_interval = 0
     volumes = ["/cache"]
     tls_verify = false
     shm_size = 0
+    allowed_images = ["docker.artifactoryci.awsrede.corp/*:*","index.docker.io/v1/*:*"]
   [runners.cache]
     Type = "s3"
     BucketName = "gitlabcache"
@@ -64,8 +71,8 @@ check_interval = 0
     MachineOptions = [
       "amazonec2-region=us-east-2",
       "amazonec2-zone=c",
-      "amazonec2-vpc-id=vpc-650a3f0d",
-      "amazonec2-subnet-id=subnet-9db945d1",
+      "amazonec2-vpc-id=vpc-f694a09e",
+      "amazonec2-subnet-id=subnet-7e2dd132",
       "amazonec2-use-private-address=true",
       "amazonec2-tags=gitlab-runner",
       "amazonec2-security-group=public",
@@ -77,10 +84,13 @@ check_interval = 0
 EOF
 
 # Adiciona token no template
-sed -i -- 's/\[\[TOKEN\]\]/'"$token"'/g' /etc/gitlab-runner/config.toml
+echo "Substituindo o token no conf do Gitlab-Runner"
+sed -i -- 's/\[\[TOKEN\]\]/'"$(echo $token)"'/g' /etc/gitlab-runner/config.toml 
 
 # Instala o service do gitlab-runner
+echo "Instalando serviço do Gitlab-Runner"
 gitlab-runner install --user root || true
 
 # Reinicia gitlab-runner para pegar novas confs
+echo "Reiniciando Gitlab-Runner"
 gitlab-runner restart
